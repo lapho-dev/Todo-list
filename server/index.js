@@ -31,6 +31,68 @@ app.use((req, res, next) => {
 
 
 // Routes
+// User routes
+app.get("/users", async (req, res) => {
+  try {
+    const allUsers = await pool.query("SELECT * FROM users_table");
+    return res.status(200).json(allUsers.rows);
+  } catch (err) {
+    console.error(err.message);
+    logger.error(`Error handling ${req.method} request to ${req.url}: ${err.message}`);
+  } 
+}
+);
+
+app.get("/user/:id", async (req, res) => {
+  const { id } = req.params;
+  try {   
+    const user = await pool.query("SELECT * FROM users_table WHERE user_id = $1", [id]);
+    return res.status(200).json(user.rows);
+  } catch (err) {
+    console.error(err.message);
+  }
+}
+);
+
+app.post("/user", async (req, res) => {
+    const { username, password } = req.body;
+    try {
+      const newUser = await pool.query("INSERT INTO users_table (username, password) VALUES($1, $2) RETURNING *", [username, password]);
+      return res.status(201).json(newUser.rows);
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+);
+
+app.put("/user/:id", async (req, res) => {
+    const { id } = req.params;
+    const { username, password } = req.body;
+    try {
+      const updatedUser = await pool.query("UPDATE users_table SET username = $1, password = $2 WHERE user_id = $3", [username, password, id]);
+      return res.status(200).json("User was updated!");
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+);
+
+app.delete("/user/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+      const deletedUser = await pool.query("DELETE FROM users_table WHERE user_id = $1", [id]);
+      return res.status(200).json("User was deleted!");
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+);
+
+
+
+
+
+
 // Get all todos
 app.get("/todos", async (req, res) => {
   try {
