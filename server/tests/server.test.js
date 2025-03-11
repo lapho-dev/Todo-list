@@ -1,6 +1,6 @@
 const request = require('supertest');
 const assert = require('assert')
-const app = require('../index');
+const app = require('../server');
 
 describe('GET /', () => {
   it('responds responds to the world', async function() {
