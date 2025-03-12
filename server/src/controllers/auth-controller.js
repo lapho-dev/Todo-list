@@ -3,6 +3,17 @@ const { hash } = require('bcryptjs');
 const {sign} = require('jsonwebtoken');
 const { SECRET } = require('../constants');
 
+
+/**
+ * Get all users from database
+ *  
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ * 
+ * @warning Security issue
+ * @todo Please delete or refine this method
+ */
 exports.getAllUsers = async (req, res)=> {
     try {
          const response = await db.query('SELECT user_id, username, email, created_date FROM users_table'); 
@@ -18,6 +29,13 @@ exports.getAllUsers = async (req, res)=> {
     }
 };
 
+/**
+ * Login an existing user by email / username and password.
+ * 
+ * @param {Object} req - The Express request object.
+ * @param {string} req - The ID of the todo to retrieve.
+ * @param {Object} res - The Express response object.
+ */
 exports.login = async (req, res)=> {
     let user = req.user;
     const payload = {
@@ -35,9 +53,7 @@ exports.login = async (req, res)=> {
         });
     } catch (error) {
         console.error(error.message);
-        return res.status(500).json({
-            error: error.message,
-        })
+        return res.status(500).json({error: error.message})
     }   
 };
 
@@ -97,3 +113,4 @@ exports.logout = async (req, res) => {
         })
     }  
 };
+
