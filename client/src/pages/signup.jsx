@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { onRegistration } from '../api/auth-api'
+import { onSignup } from '../api/auth-api'
 import Layout from '../components/layout'
 
 const Signup = () => {
@@ -19,7 +19,7 @@ const Signup = () => {
         e.preventDefault()
 
         try {
-            const response = await onRegistration(values);
+            const response = await onSignup(values);
             console.log(response);
 
             setError('')

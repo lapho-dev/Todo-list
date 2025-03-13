@@ -86,16 +86,6 @@ exports.signup = async (req, res) => {
     }
 };
 
-exports.protectedRoute = async (req, res)=> {
-    try {
-         return res.status(200).json({
-            info: 'protected info, secret is "hello world".',
-            req: req.body,
-         });
-    } catch (error) {
-        console.error(error.message);
-    }
-};
 
 exports.logout = async (req, res) => {
     try {

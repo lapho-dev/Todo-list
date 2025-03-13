@@ -129,14 +129,14 @@ exports.updateFullTodo =  async (req, res) => {
     const { title, description, completed } = req.body;
 
     // Check Params
-    if (!todo_id) {return res.status(400).json({error: 'Field "todo_id" is required.'})};
-    if (!title) {return res.status(422).json({error: 'Field "title" is required.'});};
-    if (!completed) {return res.status(422).json({error: 'Field "completed" is required.'});};
+    if (todo_id === 'undefined') {return res.status(400).json({error: 'Field "todo_id" is required.'})};
+    if (title === 'undefined') {return res.status(422).json({error: 'Field "title" is required.'});};
+    if (completed === 'undefined') {return res.status(422).json({error: 'Field "completed" is required.'});};
 
     // Check if the todo exists or is authorized
     const checkTodo = await db.query("SELECT * FROM todos_table WHERE todo_id = $1", [todo_id]);
     if (checkTodo.rows.length === 0) {return res.status(404).json({error: `Todo item with todo_id: ${todo_id} was not found.`})};
-    if (todo.rows[0]['user_id'] != user_id) {return res.status(401).json({error: 'Unauthorized access to this todo item.'})};
+    if (checkTodo.rows[0]['user_id'] != user_id) {return res.status(401).json({error: 'Unauthorized access to this todo item.'})};
 
     // Update todo
     const updatedTodo = await db.query("UPDATE todos_table SET (title, description, completed) = ($1, $2, $3) WHERE user_id = $4 AND todo_id = $5 RETURNING *", [title, description, completed, user_id, todo_id]);
@@ -145,7 +145,7 @@ exports.updateFullTodo =  async (req, res) => {
     if (!updatedTodo.rows) {res.status(404).json({error: 'Todo was updated but error when retrieving.'})}
 
     // Return
-    return res.status(200).json({
+    return res.status(201).json({
       'message': "Todo was updated!",
       'todo': updatedTodo.rows
     });
@@ -184,7 +184,7 @@ exports.updatePartialTodo = async (req, res) => {
     // Check if the todo exists or is authorized
     const checkTodo = await db.query("SELECT * FROM todos_table WHERE todo_id = $1", [todo_id]);
     if (checkTodo.rows.length === 0) {return res.status(404).json({error: `Todo item with todo_id: ${todo_id} was not found.`})};
-    if (todo.rows[0]['user_id'] != user_id) {return res.status(401).json({error: 'Unauthorized access to this todo item.'})};
+    if (checkTodo.rows[0]['user_id'] != user_id) {return res.status(401).json({error: 'Unauthorized access to this todo item.'})};
 
     // Update todo
     const updatedTodo = await db.query(`UPDATE todos_table SET ${value_to_update[0]} = $1 WHERE user_id = $2 AND todo_id = $3 RETURNING *`, [value_to_update[1], user_id, todo_id]);
@@ -193,7 +193,7 @@ exports.updatePartialTodo = async (req, res) => {
     if (!updatedTodo.rows) {res.status(404).json({error: 'Todo was updated but error when retrieving.'})}
 
     // Return
-    return res.status(200).json({
+    return res.status(201).json({
       'message': "Todo was updated partially!",
       'todo': updatedTodo.rows
     });
@@ -219,15 +219,15 @@ exports.deleteTodo = async (req, res) => {
   try {
     const user_id = req.user.user_id;
     const todo_id = req.params.todo_id;
-    
+
     // Check Params
-    if (!todo_id) {return res.status(400).json({error: 'Field "todo_id" is required.'})};
+    if (todo_id === 'undefined') {return res.status(400).json({error: 'Field "todo_id" is required.'})};
 
 
     // Check if the todo exists or is authorized
     const checkTodo = await db.query("SELECT * FROM todos_table WHERE todo_id = $1", [todo_id]);
     if (checkTodo.rows.length === 0) {return res.status(404).json({error: `Todo item with todo_id: ${todo_id} was not found.`})};
-    if (todo.rows[0]['user_id'] != user_id) {return res.status(401).json({error: 'Unauthorized access to this todo item.'})};
+    if (checkTodo.rows[0]['user_id'] != user_id) {return res.status(401).json({error: 'Unauthorized access to this todo item.'})};
 
     // Delete Todo
     const deletedTodo = await db.query("DELETE FROM todos_table WHERE user_id = $1 AND todo_id = $2 RETURNING *", [user_id, todo_id]);

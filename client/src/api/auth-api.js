@@ -1,10 +1,10 @@
-import axios from 'axios'
-axios.defaults.withCredentials = true
+import axios from 'axios';
+axios.defaults.withCredentials = true;
 
-export async function onRegistration(registrationData) {
+export async function onSignup(signupData) {
   return await axios.post(
     'http://localhost:6001/api/signup',
-    registrationData
+    signupData
   )
 }
 

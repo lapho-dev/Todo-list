@@ -15,5 +15,5 @@ CREATE TABLE todos_table (
     description TEXT,
     completed BOOLEAN NOT NULL DEFAULT FALSE,
     FOREIGN KEY (user_id) REFERENCES users_table(user_id),
-    created_data DATE DEFAULT current_date
+    created_date DATE DEFAULT current_date
 );
