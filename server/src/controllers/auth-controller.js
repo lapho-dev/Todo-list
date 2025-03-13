@@ -62,7 +62,6 @@ exports.signup = async (req, res) => {
 
     try {
         const hashedPassword = await hash(password, 10);
-
         
         const response = await db.query('INSERT INTO users_table(username, email, password) VALUES ($1, $2, $3) RETURNING *', [username, email, hashedPassword]);
 
@@ -83,16 +82,14 @@ exports.signup = async (req, res) => {
         });
     } catch (error) {
         console.error(error.message);
-        return res.status(500).json({
-            error: error.message,
-        })
+        return res.status(500).json({error: error.message})
     }
 };
 
 exports.protectedRoute = async (req, res)=> {
     try {
          return res.status(200).json({
-            info: 'protected info',
+            info: 'protected info, secret is "hello world".',
             req: req.body,
          });
     } catch (error) {

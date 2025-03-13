@@ -2,7 +2,8 @@ const colors = {
   reset: "\x1b[0m",
   fgGreen: "\x1b[32m",
   fgRed: "\x1b[31m",
-  fgYellow: "\x1b[33m"
+  fgYellow: "\x1b[33m",
+  FgGray: "\x1b[90m"
 };
 
 function getStatusColor(status) {
@@ -10,6 +11,8 @@ function getStatusColor(status) {
     return colors.fgGreen; // Success (green)
   } else if (status >= 400 && status < 600) {
     return colors.fgRed; // Error (red)
+  } else if (status == 304){
+    return colors.FgGray // Cached (grey)
   } else {
     return colors.fgYellow; // Others (yellow)
   }
@@ -17,7 +20,10 @@ function getStatusColor(status) {
 
 function logRequest(status, method, timeTaken, path, sender) {
   const statusColor = getStatusColor(status);
-  const logMessage = `${statusColor}${status}${colors.reset} ${method} ${timeTaken}ms ${path} from ${sender}`;
+  const croppedMethod = method.slice(0, 4);
+  const paddedMethod = croppedMethod.padEnd(4, ' ')
+  const paddedTime = String(timeTaken).padStart(4, ' ');
+  const logMessage = `${statusColor}${status}${colors.reset} ${paddedMethod}${paddedTime}ms ${path} from ${sender}`;
   console.log(logMessage);
 }
 

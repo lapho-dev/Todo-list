@@ -13,7 +13,7 @@ require('./middlewares/passport-middleware')
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(cors({ origin: CLIENT_URL, credentials: true }));
+app.use(cors({ origin: CLIENT_URL, credentials: true, optionSuccessStatus:200 }));
 app.use(passport.initialize());
 
 // Middleware to log requests and responses

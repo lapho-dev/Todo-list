@@ -10,15 +10,21 @@ const email = check('email').isEmail().withMessage('Please provide a valide emai
 
 // Email Existence Check
 const emailExists = check('email').custom(async (email) => {
-    const { rows } = await db.query('SELECT * FROM users_table WHERE email = $1', [
-        email,
-    ])
+    const { rows } = await db.query('SELECT * FROM users_table WHERE email = $1', [email])
 
     if (rows.length) {
         throw new Error('Email already exists.');
     };
 }).withMessage('Email already exists.');
 
+// Username Existence Check
+const usernameExists = check('username').custom(async (username) => {
+    const { rows } = await db.query('SELECT * FROM users_table WHERE username = $1', [username])
+
+    if (rows.length) {
+        throw new Error('Username already exists.');
+    };
+}).withMessage('Username already exists.');
 
 
 // Login Validation
@@ -31,7 +37,7 @@ const loginFieldsCheck = check('email').custom(async (email, { req }) => {
     // Query User with email or username
     let user;
     if (email) {
-        user = await db.query('SELECT * FROM users_table WHERE email = $1', [email]);  
+        user = await db.query('SELECT * FROM users_table WHERE email = $1', [email]);
     } else if (req.body.username) {
         user = await db.query('SELECT * FROM users_table WHERE username = $1', [req.body.username])
     } else {
@@ -55,6 +61,6 @@ const loginFieldsCheck = check('email').custom(async (email, { req }) => {
 
 // exports
 module.exports = {
-    registerValidation: [email, password, emailExists],
+    registerValidation: [email, password, emailExists, usernameExists],
     loginValidation: [loginFieldsCheck],
 };
